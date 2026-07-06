@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Penumbra Ruptura - Sistema Oficial</title>
+    <style>
+        /* --- TEMA ESTILO C.R.I.S. (DARK & CLEAN) --- */
+        :root {
+            --bg-app: #0d0d0d;
+            --bg-card: #141414;
+            --bg-input: #202020;
+            --primary: #8a2be2; 
+            --primary-hover: #9b4dff;
+            --text-main: #f2f2f2;
+            --text-muted: #808080;
+            --border: #333333;
+            
+            /* Cores das Barras de Status */
+            --pv-color: #e63946;
+            --em-color: #457b9d; /* Esforço Mental */
+            --ef-color: #e9c46a; /* Esforço Físico */
+            --pos-color: #f1faee; /* Postura */
+            --sob-color: #9d4edd; /* Sobrecarga */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-app);
+            color: var(--text-main);
+            min-height: 100vh;
+        }
+
+        /* --- NAVEGAÇÃO --- */
+        header {
+            background-color: var(--bg-card);
+            border-bottom: 2px solid var(--primary);
+            padding: 0.8rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo h1 {
+            font-size: 1.4rem;
+            color: var(--text-main);
+            text-transform: uppercase;
+            cursor: pointer;
+        }
+
+        .logo h1 span { color: var(--primary); font-weight: bold; }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            background-color: var(--bg-input);
+            color: var(--text-main);
+            border: 1px solid var(--border);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn:hover { border-color: var(--primary); background-color: #2a2a2a; }
+        .btn-primary { background-color: var(--primary); border-color: var(--primary); }
+        .btn-primary:hover { background-color: var(--primary-hover); border-color: var(--primary-hover); }
+
+        /* --- PÁGINA INICIAL --- */
+        #page-home {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: calc(100vh - 70px);
+            background-image: linear-gradient(to bottom, rgba(13,13,13,0.5), var(--bg-app)), url('Ruptura.jpg');
+            background-size: cover;
+            background-position: center;
+            text-align: center;
+        }
+
+        .home-content h2 {
+            font-size: 4rem;
+            text-shadow: 0 4px 15px rgba(0,0,0,0.9);
+            margin-bottom: 10px;
+            letter-spacing: 5px;
+        }
+
+        .home-content p {
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            font-style: italic;
+        }
+
+        .home-content .btn {
+            font-size: 1.2rem;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+        }
+
+        /* --- LAYOUT DA FICHA --- */
+        #page-sheet {
+            max-width: 1500px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            display: grid;
+            grid-template-columns: 400px 1fr;
+            gap: 2rem;
+        }
+
+        .card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+            border-bottom: 1px dashed var(--border);
+            padding-bottom: 0.5rem;
+        }
+
+        /* --- INPUTS --- */
+        .input-group { margin-bottom: 0.8rem; }
+        .input-group label {
+            display: block;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 0.2rem;
+        }
+        .input-group input, .input-group textarea {
+            width: 100%;
+            background-color: var(--bg-input);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 0.5rem;
+            border-radius: 4px;
+            outline: none;
+            transition: 0.2s;
+        }
+        .input-group input:focus, .input-group textarea:focus { border-color: var(--primary); }
+        
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.8rem; }
+
+        /* --- STATUS BARS (LIMITADAS) --- */
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+        }
+
+        .status-box {
+            background-color: var(--bg-input);
+            padding: 1rem;
+            border-radius: 6px;
+            text-align: center;
+            border-top: 3px solid;
+            position: relative;
+        }
+
+        .status-pv { border-color: var(--pv-color); }
+        .status-em { border-color: var(--em-color); }
+        .status-ef { border-color: var(--ef-color); }
+        .status-pos { border-color: var(--pos-color); }
+        .status-sob { border-color: var(--sob-color); }
+
+        .status-box label {
+            display: block;
+            font-weight: bold;
+            font-size: 0.9rem;
+            color: var(--text-main);
+        }
+
+        .status-limit-badge {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .status-inputs {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .status-inputs input {
+            width: 50px;
+            background: transparent;
+            border: none;
+            color: var(--text-main);
+            font-size: 1.4rem;
+            font-weight: bold;
+            text-align: center;
+            border-bottom: 2px solid var(--border);
+            outline: none;
+        }
+
+        .status-inputs input:focus { border-color: var(--primary); }
+        .status-inputs span { color: var(--text-muted); }
+
+        .status-msg {
+            font-size: 0.75rem;
+            margin-top: 8px;
+            color: var(--text-muted);
+            min-height: 18px;
+        }
+
+        /* --- ATRIBUTOS --- */
+        .attr-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            text-align: center;
+        }
+        .attr-circle {
+            width: 50px; height: 50px;
+            margin: 0 auto;
+            border-radius: 50%;
+            background-color: var(--bg-input);
+            border: 2px solid var(--border);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .attr-circle input {
+            width: 100%; background: transparent; border: none;
+            text-align: center; color: var(--text-main); font-size: 1.2rem; font-weight: bold; outline: none;
+        }
+        .attr-box label { font-size: 0.75rem; margin-top: 5px; display: block; color: var(--text-muted); }
+
+        /* --- HABILIDADES --- */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+        .skill-item {
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px dashed var(--border); padding-bottom: 4px;
+        }
+        .skill-item label { font-size: 0.85rem; }
+        .skill-item input {
+            width: 35px; background-color: var(--bg-input); border: 1px solid var(--border);
+            color: var(--primary); text-align: center; padding: 0.2rem; border-radius: 4px; font-weight: bold; outline: none;
+        }
+
+        /* --- INVENTÁRIO TEXTAREAS --- */
+        .inv-box textarea { min-height: 80px; resize: vertical; }
+
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+    <!-- NAVEGAÇÃO -->
+    <header>
+        <div class="logo" onclick="showPage('home')">
+            <h1>Penumbra <span>Ruptura</span></h1>
+        </div>
+        <div class="header-actions">
+            <!-- Funciona na Home e na Ficha -->
+            <button class="btn" onclick="document.getElementById('file-upload').click()">📂 Carregar Ficha</button>
+            <button class="btn btn-primary hidden" id="btn-save" onclick="exportarFichaJSON()">💾 Salvar Ficha</button>
+            <input type="file" id="file-upload" accept=".json" class="hidden" onchange="importarFichaJSON(event)">
+        </div>
+    </header>
+
+    <!-- PÁGINA INICIAL -->
+    <main id="page-home">
+        <div class="home-content">
+            <h2>RUPTURA</h2>
+            <p>"A Energia Almática aguarda por novos portadores."</p>
+            <button class="btn btn-primary" onclick="showPage('sheet')">ACESSAR SISTEMA DE FICHAS</button>
+        </div>
+    </main>
+
+    <!-- PÁGINA DA FICHA DE PERSONAGEM -->
+    <main id="page-sheet" class="hidden">
+        
+        <!-- COLUNA ESQUERDA -->
+        <div class="col-left">
+            
+            <div class="card">
+                <div class="card-title">Identificação</div>
+                <div class="input-group"><label>Nome do Agente</label><input type="text" id="f_nome"></div>
+                <div class="grid-2">
+                    <div class="input-group"><label>Patente</label><input type="text" id="f_patente"></div>
+                    <div class="input-group"><label>Idade</label><input type="text" id="f_idade"></div>
+                    <div class="input-group"><label>Cargo</label><input type="text" id="f_cargo"></div>
+                    <div class="input-group"><label>Origem</label><input type="text" id="f_origem"></div>
+                    <div class="input-group"><label>Organização</label><input type="text" id="f_org"></div>
+                </div>
+            </div>
+
+            <!-- NOVO: E.N.X -->
+            <div class="card" style="border-color: #5c3c92;">
+                <div class="card-title" style="color: #c4a7e7;">E.N.X & Conexões</div>
+                <div class="grid-2">
+                    <div class="input-group"><label>E.G.O (Nome)</label><input type="text" id="f_ego_nome"></div>
+                    <div class="input-group"><label>E.G.O (Nível)</label><input type="text" id="f_ego_nivel"></div>
+                    <div class="input-group"><label>Estilo de Luta (Nome)</label><input type="text" id="f_estilo_nome"></div>
+                    <div class="input-group"><label>Estilo de Luta (Nível)</label><input type="text" id="f_estilo_nivel"></div>
+                    <div class="input-group"><label>Raiva (0 a 3)</label><input type="number" id="f_raiva" min="0" max="3" value="0"></div>
+                    <div class="input-group"><label>NEX (Nível)</label><input type="text" id="f_nex"></div>
+                </div>
+            </div>
+
+            <!-- NOVO: PROGRESSÃO -->
+            <div class="card">
+                <div class="card-title">Progressão</div>
+                <div class="grid-2">
+                    <div class="input-group"><label>Nível</label><input type="text" id="f_nivel"></div>
+                    <div class="input-group"><label>XP Atual</label><input type="text" id="f_xp"></div>
+                    <div class="input-group"><label>Pontos de Atributo</label><input type="text" id="f_pts_atributo"></div>
+                    <div class="input-group"><label>Missões Concluídas</label><input type="number" id="f_missoes" value="0"></div>
+                </div>
+            </div>
+
+            <!-- NOVO: RENOMES -->
+            <div class="card">
+                <div class="card-title">Renomes (Nível Máximo 3)</div>
+                <div class="grid-3">
+                    <div class="input-group"><label>Glória</label><input type="number" id="f_ren_gloria" min="0" max="3" value="0"></div>
+                    <div class="input-group"><label>Honra</label><input type="number" id="f_ren_honra" min="0" max="3" value="0"></div>
+                    <div class="input-group"><label>Sabedoria</label><input type="number" id="f_ren_sabedoria" min="0" max="3" value="0"></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Atributos</div>
+                <div class="attr-grid">
+                    <div class="attr-box"><div class="attr-circle"><input type="text" id="f_for" value="0"></div><label>Força</label></div>
+                    <div class="attr-box"><div class="attr-circle"><input type="text" id="f_des" value="0"></div><label>Destreza</label></div>
+                    <div class="attr-box"><div class="attr-circle"><input type="text" id="f_vig" value="0"></div><label>Vigor</label></div>
+                    <div class="attr-box"><div class="attr-circle"><input type="text" id="f_int" value="0"></div><label>Intel.</label></div>
+                    <div class="attr-box"><div class="attr-circle"><input type="text" id="f_rac" value="0"></div><label>Raciocínio</label></div>
+                    <div class="attr-box"><div class="attr-circle"><input type="text" id="f_car" value="0"></div><label>Carisma</label></div>
+                    <div class="attr-box"><div class="attr-circle"><input type="text" id="f_man" value="0"></div><label>Manipulação</label></div>
+                    <div class="attr-box"><div class="attr-circle"><input type="text" id="f_det" value="0"></div><label>Determinação</label></div>
+                    <div class="attr-box"><div class="attr-circle"><input type="text" id="f_aut" value="0"></div><label>Autocontrole</label></div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- COLUNA DIREITA -->
+        <div class="col-right">
+            
+            <!-- BARRAS DE STATUS ATUALIZADAS -->
+            <div class="card">
+                <div class="status-grid">
+                    <!-- Vida não tem limite -->
+                    <div class="status-box status-pv">
+                        <label>Pontos de Vida</label>
+                        <span class="status-limit-badge">(Sem limite)</span>
+                        <div class="status-inputs">
+                            <input type="text" id="v_pv_atual" value="0" onkeyup="attStatus('v_pv_atual','v_pv_max','msg_pv','Vida')">
+                            <span>/</span>
+                            <input type="text" id="v_pv_max" value="0" onkeyup="attStatus('v_pv_atual','v_pv_max','msg_pv','Vida')">
+                        </div>
+                        <div id="msg_pv" class="status-msg">Estável.</div>
+                    </div>
+                    
+                    <!-- Barras limitadas a 300 -->
+                    <div class="status-box status-em">
+                        <label>Esforço Mental (EM)</label>
+                        <span class="status-limit-badge">(Máx. 300)</span>
+                        <div class="status-inputs">
+                            <input type="text" id="v_em_atual" value="0" onkeyup="attStatus('v_em_atual','v_em_max','msg_em','EM', 300)">
+                            <span>/</span>
+                            <input type="text" id="v_em_max" value="0" onkeyup="attStatus('v_em_atual','v_em_max','msg_em','EM', 300)">
+                        </div>
+                        <div id="msg_em" class="status-msg">Mente clara.</div>
+                    </div>
+
+                    <div class="status-box status-ef">
+                        <label>Esforço Físico (EF)</label>
+                        <span class="status-limit-badge">(Máx. 300)</span>
+                        <div class="status-inputs">
+                            <input type="text" id="v_ef_atual" value="0" onkeyup="attStatus('v_ef_atual','v_ef_max','msg_ef','EF', 300)">
+                            <span>/</span>
+                            <input type="text" id="v_ef_max" value="0" onkeyup="attStatus('v_ef_atual','v_ef_max','msg_ef','EF', 300)">
+                        </div>
+                        <div id="msg_ef" class="status-msg">Corpo descansado.</div>
+                    </div>
+
+                    <div class="status-box status-pos">
+                        <label>Barra de Postura</label>
+                        <span class="status-limit-badge">(Máx. 300)</span>
+                        <div class="status-inputs">
+                            <input type="text" id="v_pos_atual" value="0" onkeyup="attStatus('v_pos_atual','v_pos_max','msg_pos','Postura', 300)">
+                            <span>/</span>
+                            <input type="text" id="v_pos_max" value="0" onkeyup="attStatus('v_pos_atual','v_pos_max','msg_pos','Postura', 300)">
+                        </div>
+                        <div id="msg_pos" class="status-msg">Firme.</div>
+                    </div>
+
+                    <div class="status-box status-sob">
+                        <label>Sobrecarga</label>
+                        <span class="status-limit-badge">(Máx. 300)</span>
+                        <div class="status-inputs">
+                            <input type="text" id="v_sob_atual" value="0" onkeyup="attStatus('v_sob_atual','v_sob_max','msg_sob','Sobrecarga', 300)">
+                            <span>/</span>
+                            <input type="text" id="v_sob_max" value="0" onkeyup="attStatus('v_sob_atual','v_sob_max','msg_sob','Sobrecarga', 300)">
+                        </div>
+                        <div id="msg_sob" class="status-msg">Sistema normal.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- NOVA LISTA DE HABILIDADES COMPLETA -->
+            <div class="card">
+                <div class="card-title">Habilidades em Destaque</div>
+                <div class="skills-grid">
+                    <div class="skill-item"><label>Armas</label><input type="text" id="h_armas" value="0"></div>
+                    <div class="skill-item"><label>Armas Brancas</label><input type="text" id="h_armas_b" value="0"></div>
+                    <div class="skill-item"><label>Armas de Fogo</label><input type="text" id="h_armas_f" value="0"></div>
+                    <div class="skill-item"><label>Artes Marciais</label><input type="text" id="h_artes" value="0"></div>
+                    <div class="skill-item"><label>Atletismo</label><input type="text" id="h_atletismo" value="0"></div>
+                    <div class="skill-item"><label>Briga</label><input type="text" id="h_briga" value="0"></div>
+                    <div class="skill-item"><label>Ciência</label><input type="text" id="h_ciencia" value="0"></div>
+                    <div class="skill-item"><label>Criptografia</label><input type="text" id="h_cripto" value="0"></div>
+                    <div class="skill-item"><label>Empatia.Animais</label><input type="text" id="h_empatia" value="0"></div>
+                    <div class="skill-item"><label>Enganação</label><input type="text" id="h_enganacao" value="0"></div>
+                    <div class="skill-item"><label>Explosivos</label><input type="text" id="h_explosivos" value="0"></div>
+                    <div class="skill-item"><label>Furtividade</label><input type="text" id="h_furtividade" value="0"></div>
+                    <div class="skill-item"><label>Intimidação</label><input type="text" id="h_intimidacao" value="0"></div>
+                    <div class="skill-item"><label>Investigação</label><input type="text" id="h_investigacao" value="0"></div>
+                    <div class="skill-item"><label>Liderança</label><input type="text" id="h_lideranca" value="0"></div>
+                    <div class="skill-item"><label>Manha</label><input type="text" id="h_manha" value="0"></div>
+                    <div class="skill-item"><label>Medicina</label><input type="text" id="h_medicina" value="0"></div>
+                    <div class="skill-item"><label>Negociação</label><input type="text" id="h_negociacao" value="0"></div>
+                    <div class="skill-item"><label>Ocultismo</label><input type="text" id="h_ocultismo" value="0"></div>
+                    <div class="skill-item"><label>Percepção</label><input type="text" id="h_percepcao" value="0"></div>
+                    <div class="skill-item"><label>Performance</label><input type="text" id="h_performance" value="0"></div>
+                    <div class="skill-item"><label>Persuasão</label><input type="text" id="h_persuasao" value="0"></div>
+                    <div class="skill-item"><label>Pilotagem</label><input type="text" id="h_pilotagem" value="0"></div>
+                    <div class="skill-item"><label>Política</label><input type="text" id="h_politica" value="0"></div>
+                    <div class="skill-item"><label>Religião</label><input type="text" id="h_religiao" value="0"></div>
+                    <div class="skill-item"><label>Resistência</label><input type="text" id="h_resistencia" value="0"></div>
+                    <div class="skill-item"><label>Rituais</label><input type="text" id="h_rituais" value="0"></div>
+                    <div class="skill-item"><label>Runologia</label><input type="text" id="h_runologia" value="0"></div>
+                    <div class="skill-item"><label>Sagacidade</label><input type="text" id="h_sagacidade" value="0"></div>
+                    <div class="skill-item"><label>Sanidade</label><input type="text" id="h_sanidade" value="0"></div>
+                    <div class="skill-item"><label>Sobrevivência</label><input type="text" id="h_sobrevivencia" value="0"></div>
+                    <div class="skill-item"><label>Tecnologia</label><input type="text" id="h_tecnologia" value="0"></div>
+                    <div class="skill-item"><label>Toxicologia</label><input type="text" id="h_toxicologia" value="0"></div>
+                    <div class="skill-item"><label>Táticas de Combate</label><input type="text" id="h_taticas" value="0"></div>
+                </div>
+            </div>
+
+            <!-- NOVO: INVENTÁRIO SEPARADO -->
+            <div class="card">
+                <div class="card-title">Inventário</div>
+                <div class="input-group inv-box">
+                    <label>Equipamentos</label>
+                    <textarea id="f_inv_equip" placeholder="Suas armas, armaduras e equipamentos chave..."></textarea>
+                </div>
+                <div class="grid-2 inv-box">
+                    <div class="input-group">
+                        <label>Consumíveis</label>
+                        <textarea id="f_inv_cons" placeholder="Munição, curativos..."></textarea>
+                    </div>
+                    <div class="input-group">
+                        <label>Materiais</label>
+                        <textarea id="f_inv_mat" placeholder="Componentes, itens de missão..."></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" style="border-color: var(--primary);">
+                <div class="card-title" style="color: var(--primary);">Anotações Almáticas (Rituais e Vantagens)</div>
+                <div class="input-group">
+                    <label>Rituais</label>
+                    <textarea id="f_rituais" rows="3"></textarea>
+                </div>
+                <div class="input-group">
+                    <label>Vantagens / Desvantagens</label>
+                    <textarea id="f_vantagens" rows="3"></textarea>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        // --- NAVEGAÇÃO DE PÁGINAS ---
+        function showPage(pageId) {
+            document.getElementById('page-home').classList.add('hidden');
+            document.getElementById('page-sheet').classList.add('hidden');
+            document.getElementById('btn-save').classList.add('hidden');
+
+            document.getElementById('page-' + pageId).classList.remove('hidden');
+            if(pageId === 'sheet') {
+                document.getElementById('btn-save').classList.remove('hidden');
+            }
+        }
+
+        // --- SISTEMA DINÂMICO DE BARRAS DE STATUS (COM LIMITES) ---
+        function attStatus(atualId, maxId, msgId, nomeBarra, maxGlobal = null) {
+            let elAtual = document.getElementById(atualId);
+            let elMax = document.getElementById(maxId);
+            let msgBox = document.getElementById(msgId);
+
+            let atual = parseInt(elAtual.value) || 0;
+            let max = parseInt(elMax.value) || 1; // Previne divisão por zero
+
+            // Aplica limite rígido de 300 se a barra exigir
+            if(maxGlobal && max > maxGlobal) { max = maxGlobal; elMax.value = maxGlobal; }
+            if(maxGlobal && atual > maxGlobal) { atual = maxGlobal; elAtual.value = maxGlobal; }
+
+            let percent = (atual / max) * 100;
+
+            if (atual <= 0) {
+                msgBox.innerHTML = nomeBarra === 'Vida' ? "CAÍDO / MORTO." : "ESGOTADO / ZERADO.";
+                msgBox.style.color = "var(--pv-color)";
+            } else if (percent <= 25) {
+                msgBox.innerHTML = "CRÍTICO: Risco altíssimo!";
+                msgBox.style.color = "#e76f51"; 
+            } else if (percent <= 50) {
+                msgBox.innerHTML = "ATENÇÃO: Metade do recurso gasto.";
+                msgBox.style.color = "#f4a261"; 
+            } else {
+                msgBox.innerHTML = "Normal. Capacidade operativa.";
+                msgBox.style.color = "var(--text-muted)";
+            }
+        }
+
+        // --- SALVAR JSON COM NOVOS CAMPOS ---
+        function exportarFichaJSON() {
+            // Arrays auxiliares para pegar dados facilmente
+            const idsPadrao = ['f_nome','f_patente','f_idade','f_cargo','f_origem','f_org',
+                               'f_ego_nome','f_ego_nivel','f_estilo_nome','f_estilo_nivel','f_raiva','f_nex',
+                               'f_nivel','f_xp','f_pts_atributo','f_missoes','f_ren_gloria','f_ren_honra','f_ren_sabedoria',
+                               'v_pv_atual','v_pv_max','v_em_atual','v_em_max','v_ef_atual','v_ef_max',
+                               'v_pos_atual','v_pos_max','v_sob_atual','v_sob_max',
+                               'f_for','f_des','f_vig','f_int','f_rac','f_car','f_man','f_det','f_aut',
+                               'h_armas','h_armas_b','h_armas_f','h_artes','h_atletismo','h_briga','h_ciencia',
+                               'h_cripto','h_empatia','h_enganacao','h_explosivos','h_furtividade','h_intimidacao',
+                               'h_investigacao','h_lideranca','h_manha','h_medicina','h_negociacao','h_ocultismo',
+                               'h_percepcao','h_performance','h_persuasao','h_pilotagem','h_politica','h_religiao',
+                               'h_resistencia','h_rituais','h_runologia','h_sagacidade','h_sanidade','h_sobrevivencia',
+                               'h_tecnologia','h_toxicologia','h_taticas',
+                               'f_inv_equip','f_inv_cons','f_inv_mat','f_rituais','f_vantagens'];
+
+            const dadosFicha = {};
+            idsPadrao.forEach(id => {
+                const el = document.getElementById(id);
+                if(el) dadosFicha[id] = el.value;
+            });
+
+            const textoJSON = JSON.stringify(dadosFicha, null, 2);
+            const blob = new Blob([textoJSON], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            
+            const link = document.createElement("a");
+            link.href = url;
+            const nomeArquivo = dadosFicha.f_nome ? `ficha_${dadosFicha.f_nome.replace(/\s+/g, '_').toLowerCase()}.json` : "ficha_penumbra.json";
+            link.download = nomeArquivo;
+            
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }
+
+        // --- CARREGAR JSON COM NOVOS CAMPOS ---
+        function importarFichaJSON(event) {
+            const arquivo = event.target.files[0];
+            if (!arquivo) return;
+
+            const leitor = new FileReader();
+            leitor.onload = function(e) {
+                try {
+                    const dadosFicha = JSON.parse(e.target.result);
+                    
+                    // Preencher todos os IDs salvos
+                    for (const [id, valor] of Object.entries(dadosFicha)) {
+                        const el = document.getElementById(id);
+                        if (el) el.value = valor;
+                    }
+
+                    // Atualizar todas as mensagens de status visualmente após carregar
+                    attStatus('v_pv_atual','v_pv_max','msg_pv','Vida');
+                    attStatus('v_em_atual','v_em_max','msg_em','EM', 300);
+                    attStatus('v_ef_atual','v_ef_max','msg_ef','EF', 300);
+                    attStatus('v_pos_atual','v_pos_max','msg_pos','Postura', 300);
+                    attStatus('v_sob_atual','v_sob_max','msg_sob','Sobrecarga', 300);
+
+                    showPage('sheet'); // Garante que a tela da ficha abra
+                    alert("Dados almáticos sincronizados com sucesso!");
+                    
+                } catch (erro) {
+                    alert("Arquivo corrompido ou incompatível com o sistema.");
+                }
+            };
+            leitor.readAsText(arquivo);
+            event.target.value = '';
+        }
+    </script>
+</body>
+</html>
