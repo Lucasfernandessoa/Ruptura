@@ -1,0 +1,1294 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Penumbra Ruptura - Sistema Oficial</title>
+    <style>
+        :root {
+            --bg-app: #0d0d0d;
+            --bg-card: #141414;
+            --bg-input: #202020;
+            --primary: #8a2be2; 
+            --primary-hover: #9b4dff;
+            --text-main: #f2f2f2;
+            --text-muted: #808080;
+            --border: #333333;
+            
+            --pv-color: #e63946;
+            --em-color: #457b9d; 
+            --ef-color: #e9c46a; 
+            --pos-color: #f1faee; 
+            --sob-color: #9d4edd; 
+            --san-color: #00bbf9; 
+            --cont-color: #85cb33; 
+            --danger-color: #ef4444;
+            --success-color: #10b981;
+        }
+
+        /* --- TEMA CLARO --- */
+        body.light-theme {
+            --bg-app: #f0f2f5;
+            --bg-card: #ffffff;
+            --bg-input: #e4e6eb;
+            --primary: #6b21a8;
+            --primary-hover: #7e22ce;
+            --text-main: #1c1e21;
+            --text-muted: #65676b;
+            --border: #cccccc;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-app);
+            color: var(--text-main);
+            min-height: 100vh;
+            transition: background-color 0.3s, color 0.3s, box-shadow 0.3s ease;
+        }
+
+        body.critical-mode {
+            animation: pulseDanger 1.5s infinite alternate;
+        }
+
+        @keyframes pulseDanger {
+            0% { box-shadow: inset 0 0 15px rgba(230, 57, 70, 0.4); }
+            100% { box-shadow: inset 0 0 50px rgba(230, 57, 70, 0.9); }
+        }
+
+        /* --- NAVEGAÇÃO --- */
+        header {
+            background-color: var(--bg-card);
+            border-bottom: 2px solid var(--primary);
+            padding: 0.8rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo h1 {
+            font-size: 1.4rem;
+            color: var(--text-main);
+            text-transform: uppercase;
+            cursor: pointer;
+        }
+
+        .logo h1 span { color: var(--primary); font-weight: bold; }
+
+        .header-actions { display: flex; gap: 0.8rem; align-items: center; }
+
+        .btn {
+            background-color: var(--bg-input);
+            color: var(--text-main);
+            border: 1px solid var(--border);
+            padding: 0.5rem 0.8rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+            font-size: 0.85rem;
+        }
+
+        .btn:hover { border-color: var(--primary); background-color: rgba(138, 43, 226, 0.2); }
+        .btn-primary { background-color: var(--primary); border-color: var(--primary); color: #fff; }
+        .btn-primary:hover { background-color: var(--primary-hover); border-color: var(--primary-hover); }
+        .btn-danger { background-color: #a82323; border-color: #a82323; color: #fff; }
+        .btn-danger:hover { background-color: #c92a2a; }
+
+        /* --- PÁGINA INICIAL --- */
+        #page-home {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: calc(100vh - 70px);
+            background-image: linear-gradient(to bottom, rgba(13,13,13,0.5), var(--bg-app)), url('Ruptura.jpg');
+            background-size: cover;
+            background-position: center;
+            text-align: center;
+        }
+
+        .home-content h2 {
+            font-size: 4rem;
+            text-shadow: 0 4px 15px rgba(0,0,0,0.9);
+            margin-bottom: 10px;
+            letter-spacing: 5px;
+        }
+
+        .home-content p {
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            font-style: italic;
+        }
+
+        .home-content .btn { font-size: 1.2rem; padding: 1rem 2rem; border-radius: 8px; }
+
+        /* --- LAYOUT DA FICHA --- */
+        #page-sheet {
+            max-width: 1500px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            display: grid;
+            grid-template-columns: 420px 1fr;
+            gap: 2rem;
+        }
+
+        .card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+            border-bottom: 1px dashed var(--border);
+            padding-bottom: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* --- AVATAR DO PERSONAGEM --- */
+        .avatar-container {
+            width: 100%;
+            height: 180px;
+            background-color: var(--bg-input);
+            border: 2px dashed var(--border);
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .avatar-container:hover { border-color: var(--primary); }
+        .avatar-container img { width: 100%; height: 100%; object-fit: cover; }
+        .avatar-placeholder { color: var(--text-muted); font-size: 0.85rem; text-align: center; }
+
+        /* --- INPUTS E SELECTS --- */
+        .input-group { margin-bottom: 0.8rem; }
+        .input-group label {
+            display: block;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 0.2rem;
+        }
+        .input-group input, .input-group textarea, .input-group select {
+            width: 100%;
+            background-color: var(--bg-input);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 0.5rem;
+            border-radius: 4px;
+            outline: none;
+            transition: 0.2s;
+        }
+        .input-group input:focus, .input-group textarea:focus, .input-group select:focus { border-color: var(--primary); }
+        
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.8rem; }
+        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.8rem; }
+
+        /* --- BARRAS DE STATUS --- */
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+        }
+
+        .status-box {
+            background-color: var(--bg-input);
+            padding: 1rem;
+            border-radius: 6px;
+            text-align: center;
+            border-top: 3px solid;
+            position: relative;
+        }
+
+        .status-pv { border-color: var(--pv-color); }
+        .status-em { border-color: var(--em-color); }
+        .status-ef { border-color: var(--ef-color); }
+        .status-pos { border-color: var(--pos-color); }
+        .status-sob { border-color: var(--sob-color); }
+        .status-san { border-color: var(--san-color); }
+        .status-cont { border-color: var(--cont-color); }
+
+        .status-box label { display: block; font-weight: bold; font-size: 0.9rem; color: var(--text-main); }
+        .status-limit-badge { font-size: 0.65rem; color: var(--text-muted); margin-bottom: 0.5rem; display: block; }
+
+        .status-inputs { display: flex; align-items: center; justify-content: center; gap: 5px; }
+
+        .status-inputs input {
+            width: 50px;
+            background: transparent;
+            border: none;
+            color: var(--text-main);
+            font-size: 1.4rem;
+            font-weight: bold;
+            text-align: center;
+            border-bottom: 2px solid var(--border);
+            outline: none;
+        }
+
+        .status-inputs input:focus { border-color: var(--primary); }
+        .status-inputs span { color: var(--text-muted); }
+
+        .status-msg { font-size: 0.75rem; margin-top: 8px; color: var(--text-muted); min-height: 18px; font-weight: 500; }
+
+        /* --- BADGES DE STATUS (EFEITOS INTERATIVOS) --- */
+        .status-badges-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.35rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .status-badge:hover { border-color: var(--primary); }
+
+        .status-badge.active-neg {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: var(--danger-color);
+            color: var(--danger-color);
+        }
+
+        .status-badge.active-pos {
+            background: rgba(16, 185, 129, 0.2);
+            border-color: var(--success-color);
+            color: var(--success-color);
+        }
+
+        .badge-counter {
+            display: inline-flex;
+            align-items: center;
+            gap: 2px;
+            margin-left: 2px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 10px;
+            padding: 0 4px;
+        }
+
+        .badge-btn {
+            background: transparent;
+            border: none;
+            color: inherit;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 0.7rem;
+            padding: 0 2px;
+        }
+
+        /* --- TOOLTIP DICAS --- */
+        .status-badge[data-tooltip]:hover::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #000;
+            color: #fff;
+            padding: 0.5rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            white-space: normal;
+            width: 220px;
+            z-index: 100;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            pointer-events: none;
+        }
+
+        /* --- RECURSOS RÁPIDOS --- */
+        .resource-tracker {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: var(--bg-input);
+            padding: 0.8rem;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+        }
+
+        .resource-tracker label { font-size: 0.8rem; font-weight: bold; margin-bottom: 0.4rem; color: var(--text-muted); }
+        .tracker-controls { display: flex; align-items: center; gap: 0.5rem; }
+
+        .tracker-controls button {
+            width: 28px; height: 28px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .tracker-controls button:hover { border-color: var(--primary); color: var(--primary); }
+
+        .tracker-controls input {
+            width: 45px;
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: bold;
+            background: transparent;
+            border: none;
+            color: var(--text-main);
+            outline: none;
+        }
+
+        /* --- ATRIBUTOS --- */
+        .attr-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.2rem;
+            text-align: center;
+            padding: 0.5rem 0;
+        }
+
+        .attr-circle {
+            width: 60px; height: 60px;
+            margin: 0 auto;
+            border-radius: 50%;
+            background-color: var(--bg-input);
+            border: 2px solid var(--border);
+            display: flex; align-items: center; justify-content: center;
+            transition: 0.2s;
+        }
+
+        .attr-circle:focus-within { border-color: var(--primary); }
+        .attr-circle input {
+            width: 100%; background: transparent; border: none;
+            text-align: center; color: var(--text-main); font-size: 1.4rem; font-weight: bold; outline: none;
+        }
+
+        .attr-box label { font-size: 0.8rem; margin-top: 6px; display: block; color: var(--text-muted); font-weight: 600; }
+
+        .point-pool {
+            background: var(--bg-input);
+            border: 1px solid var(--primary);
+            padding: 10px;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 0.9rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: var(--text-main);
+        }
+
+        .point-pool.error { border-color: var(--danger-color); color: var(--danger-color); }
+
+        /* --- TABELA DE ATAQUES --- */
+        .weapons-table { width: 100%; border-collapse: collapse; margin-top: 0.5rem; }
+        .weapons-table th, .weapons-table td { padding: 0.5rem; border: 1px solid var(--border); text-align: left; }
+        .weapons-table th { background: var(--bg-input); font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; }
+        .weapons-table input { width: 100%; background: transparent; border: none; color: var(--text-main); outline: none; font-size: 0.9rem; }
+        .weapons-table input:focus { background: var(--bg-input); }
+
+        /* --- HABILIDADES --- */
+        .skills-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.8rem; }
+        .skill-item { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed var(--border); padding-bottom: 4px; }
+        .skill-item label { font-size: 0.85rem; }
+        .skill-item input {
+            width: 35px; background-color: var(--bg-input); border: 1px solid var(--border);
+            color: var(--primary); text-align: center; padding: 0.2rem; border-radius: 4px; font-weight: bold; outline: none;
+        }
+
+        .class-desc { font-size: 0.85rem; line-height: 1.4; color: var(--text-main); background: var(--bg-input); padding: 0.8rem; border-radius: 6px; border-left: 3px solid var(--primary); }
+
+        .inv-box textarea { min-height: 80px; resize: vertical; }
+        .overburdened { border-color: var(--danger-color) !important; color: var(--danger-color) !important; font-weight: bold; }
+
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+    <!-- NAVEGAÇÃO -->
+    <header>
+        <div class="logo" onclick="showPage('home')">
+            <h1>Penumbra <span>Ruptura</span></h1>
+        </div>
+        <div class="header-actions">
+            <button class="btn" onclick="toggleTheme()">🌓 Tema</button>
+            <button class="btn" onclick="document.getElementById('file-upload').click()">📂 Carregar Ficha</button>
+            <button class="btn btn-primary hidden" id="btn-save" onclick="exportarFichaJSON()">💾 Salvar (JSON)</button>
+            <input type="file" id="file-upload" accept=".json" class="hidden" onchange="importarFichaJSON(event)">
+        </div>
+    </header>
+
+    <!-- PÁGINA INICIAL -->
+    <main id="page-home">
+        <div class="home-content">
+            <h2>RUPTURA</h2>
+            <p>"A Energia Almática aguarda por novos portadores."</p>
+            <button class="btn btn-primary" onclick="showPage('sheet')">ACESSAR SISTEMA DE FICHAS</button>
+        </div>
+    </main>
+
+    <!-- PÁGINA DA FICHA DE PERSONAGEM -->
+    <main id="page-sheet" class="hidden">
+        
+        <!-- COLUNA ESQUERDA -->
+        <div class="col-left">
+            
+            <div class="card">
+                <div class="card-title">Identificação & Avatar</div>
+                
+                <div class="avatar-container" onclick="document.getElementById('avatar-input').click()">
+                    <img id="avatar-img" src="" class="hidden" alt="Avatar Agente">
+                    <div id="avatar-placeholder" class="avatar-placeholder">
+                        📷 Clique para carregar a foto do Agente
+                    </div>
+                </div>
+                <input type="file" id="avatar-input" accept="image/*" class="hidden" onchange="carregarAvatar(event)">
+
+                <div class="input-group"><label>Nome do Agente</label><input type="text" id="f_nome" oninput="salvarAuto()"></div>
+                <div class="grid-3">
+                    <div class="input-group">
+                        <label>Patente / Classe</label>
+                        <select id="f_patente" onchange="atualizarFicha(true); salvarAuto()">
+                            <option value="">Selecione...</option>
+                            <option value="lutador">Lutador ☆☆</option>
+                            <option value="especialista">Especialista ☆☆☆</option>
+                            <option value="medico">Médico ☆☆☆☆</option>
+                            <option value="rampto">Rampto</option>
+                        </select>
+                    </div>
+                    <div class="input-group"><label>Idade</label><input type="text" id="f_idade" oninput="salvarAuto()"></div>
+                    <div class="input-group"><label>Peso Corp. (kg)</label><input type="text" id="f_peso_corp" oninput="salvarAuto()"></div>
+                </div>
+                <div class="grid-2">
+                    <div class="input-group"><label>Cargo</label><input type="text" id="f_cargo" oninput="salvarAuto()"></div>
+                    <div class="input-group"><label>Origem</label><input type="text" id="f_origem" oninput="salvarAuto()"></div>
+                </div>
+                <div class="input-group"><label>Organização</label><input type="text" id="f_org" oninput="salvarAuto()"></div>
+                
+                <div id="detalhes-patente" class="class-desc" style="margin-top: 0.5rem;">
+                    Selecione uma patente para visualizar as habilidades.
+                </div>
+            </div>
+
+            <!-- E.N.X & MODOS E.G.O -->
+            <div class="card" style="border-color: #5c3c92;">
+                <div class="card-title" style="color: #c4a7e7;">E.N.X & Conexões (E.G.O)</div>
+                <div class="grid-2">
+                    <div class="input-group"><label>E.G.O (Nome)</label><input type="text" id="f_ego_nome" oninput="salvarAuto()"></div>
+                    <div class="input-group">
+                        <label>Modo E.G.O</label>
+                        <select id="f_ego_status" onchange="atualizarFicha(false); salvarAuto()">
+                            <option value="off">Desativado</option>
+                            <option value="on">Ativado</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Nível do E.G.O</label>
+                        <select id="f_ego_nivel" onchange="atualizarFicha(false); salvarAuto()">
+                            <option value="1">Nível 1 (Mult x2)</option>
+                            <option value="2">Nível 2 (Mult x3)</option>
+                            <option value="3">Nível 3 (Mult x4)</option>
+                        </select>
+                    </div>
+                    <div class="input-group"><label>Estilo de Luta (Nome)</label><input type="text" id="f_estilo_nome" oninput="salvarAuto()"></div>
+                    <div class="input-group"><label>Estilo de Luta (Nível)</label><input type="text" id="f_estilo_nivel" oninput="salvarAuto()"></div>
+                    <div class="input-group"><label>Raiva (0 a 3)</label><input type="number" id="f_raiva" min="0" max="3" value="0" oninput="salvarAuto()"></div>
+                    <div class="input-group"><label>NEX (Nível)</label><input type="text" id="f_nex" oninput="salvarAuto()"></div>
+                </div>
+            </div>
+
+            <!-- PROGRESSÃO -->
+            <div class="card">
+                <div class="card-title">Progressão</div>
+                <div class="grid-2">
+                    <div class="input-group">
+                        <label>Nível Atual</label>
+                        <select id="f_nivel" onchange="atualizarFicha(false); salvarAuto()">
+                            <!-- Gerado via JS -->
+                        </select>
+                    </div>
+                    <div class="input-group"><label>XP Necessário</label><input type="text" id="f_xp" readonly></div>
+                    <div class="input-group"><label>Pontos no Nível</label><input type="text" id="f_pts_rec" readonly></div>
+                    <div class="input-group"><label>Total Pontos Acumulados</label><input type="text" id="f_pts_atributo" readonly></div>
+                    <div class="input-group" style="grid-column: span 2;"><label>Missões Concluídas</label><input type="number" id="f_missoes" value="0" oninput="salvarAuto()"></div>
+                </div>
+            </div>
+
+            <!-- RENOMES -->
+            <div class="card">
+                <div class="card-title">Renomes (Nível Máximo 3)</div>
+                <div class="grid-3">
+                    <div class="input-group"><label>Glória</label><input type="number" id="f_ren_gloria" min="0" max="3" value="0" oninput="salvarAuto()"></div>
+                    <div class="input-group"><label>Honra</label><input type="number" id="f_ren_honra" min="0" max="3" value="0" oninput="salvarAuto()"></div>
+                    <div class="input-group"><label>Sabedoria</label><input type="number" id="f_ren_sabedoria" min="0" max="3" value="0" oninput="salvarAuto()"></div>
+                </div>
+            </div>
+
+            <!-- ATRIBUTOS -->
+            <div class="card">
+                <div class="card-title">Atributos</div>
+                <div class="input-group" style="margin-bottom: 12px;">
+                    <label style="color: var(--primary-hover); font-weight: bold;">Pontos Bônus / Vantagens</label>
+                    <input type="number" id="f_pts_bonus" value="0" min="0" oninput="atualizarFicha(false); salvarAuto()">
+                </div>
+                <div class="point-pool" id="point-pool-display">
+                    Pontos Disponíveis: 14 / 14
+                </div>
+                <div class="attr-grid">
+                    <div class="attr-box"><div class="attr-circle"><input type="number" class="attr-input" id="f_for" value="0" min="0" oninput="atualizarFicha(false); salvarAuto()"></div><label>Força (+EF/Carga)</label></div>
+                    <div class="attr-box"><div class="attr-circle"><input type="number" class="attr-input" id="f_des" value="0" min="0" oninput="atualizarFicha(false); salvarAuto()"></div><label>Destreza (+EF)</label></div>
+                    <div class="attr-box"><div class="attr-circle"><input type="number" class="attr-input" id="f_vig" value="0" min="0" oninput="atualizarFicha(false); salvarAuto()"></div><label>Vigor (+PV)</label></div>
+                    <div class="attr-box"><div class="attr-circle"><input type="number" class="attr-input" id="f_int" value="0" min="0" oninput="atualizarFicha(false); salvarAuto()"></div><label>Intel. (+EM)</label></div>
+                    <div class="attr-box"><div class="attr-circle"><input type="number" class="attr-input" id="f_aut" value="0" min="0" oninput="atualizarFicha(false); salvarAuto()"></div><label>Autoc. (+EM)</label></div>
+                    <div class="attr-box"><div class="attr-circle"><input type="number" class="attr-input" id="f_det" value="0" min="0" oninput="atualizarFicha(false); salvarAuto()"></div><label>Determ. (+EM)</label></div>
+                    <div class="attr-box"><div class="attr-circle"><input type="number" class="attr-input" id="f_rac" value="0" min="0" oninput="atualizarFicha(false); salvarAuto()"></div><label>Raciocínio</label></div>
+                    <div class="attr-box"><div class="attr-circle"><input type="number" class="attr-input" id="f_car" value="0" min="0" oninput="atualizarFicha(false); salvarAuto()"></div><label>Carisma</label></div>
+                    <div class="attr-box"><div class="attr-circle"><input type="number" class="attr-input" id="f_man" value="0" min="0" oninput="atualizarFicha(false); salvarAuto()"></div><label>Manipulação</label></div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- COLUNA DIREITA -->
+        <div class="col-right">
+            
+            <!-- BARRAS DE STATUS -->
+            <div class="card">
+                <div class="status-grid">
+                    
+                    <div class="status-box status-pv">
+                        <label>Pontos de Vida</label>
+                        <span class="status-limit-badge">(Sem limite)</span>
+                        <div class="status-inputs">
+                            <input type="text" id="v_pv_atual" value="0" onkeyup="attStatus('v_pv_atual','v_pv_max','msg_pv','Vida'); salvarAuto()">
+                            <span>/</span>
+                            <input type="text" id="v_pv_max" value="0" onkeyup="attStatus('v_pv_atual','v_pv_max','msg_pv','Vida'); salvarAuto()">
+                        </div>
+                        <div id="msg_pv" class="status-msg">---</div>
+                    </div>
+                    
+                    <div class="status-box status-san">
+                        <label>Sanidade</label>
+                        <span class="status-limit-badge">(Máx. 300)</span>
+                        <div class="status-inputs">
+                            <input type="text" id="v_san_atual" value="100" onkeyup="attStatus('v_san_atual','v_san_max','msg_san','Sanidade', 300); salvarAuto()">
+                            <span>/</span>
+                            <input type="text" id="v_san_max" value="100" onkeyup="attStatus('v_san_atual','v_san_max','msg_san','Sanidade', 300); salvarAuto()">
+                        </div>
+                        <div id="msg_san" class="status-msg">---</div>
+                    </div>
+
+                    <div class="status-box status-cont">
+                        <label>Contaminação</label>
+                        <span class="status-limit-badge">(Máx. 300)</span>
+                        <div class="status-inputs">
+                            <input type="text" id="v_cont_atual" value="0" onkeyup="attStatus('v_cont_atual','v_cont_max','msg_cont','Contaminação', 300); salvarAuto()">
+                            <span>/</span>
+                            <input type="text" id="v_cont_max" value="100" onkeyup="attStatus('v_cont_atual','v_cont_max','msg_cont','Contaminação', 300); salvarAuto()">
+                        </div>
+                        <div id="msg_cont" class="status-msg">---</div>
+                    </div>
+
+                    <div class="status-box status-em">
+                        <label>Esforço Mental (EM)</label>
+                        <span class="status-limit-badge">(Máx. 300)</span>
+                        <div class="status-inputs">
+                            <input type="text" id="v_em_atual" value="0" onkeyup="attStatus('v_em_atual','v_em_max','msg_em','EM', 300); salvarAuto()">
+                            <span>/</span>
+                            <input type="text" id="v_em_max" value="0" onkeyup="attStatus('v_em_atual','v_em_max','msg_em','EM', 300); salvarAuto()">
+                        </div>
+                        <div id="msg_em" class="status-msg">---</div>
+                    </div>
+
+                    <div class="status-box status-ef">
+                        <label>Esforço Físico (EF)</label>
+                        <span class="status-limit-badge">(Máx. 300)</span>
+                        <div class="status-inputs">
+                            <input type="text" id="v_ef_atual" value="0" onkeyup="attStatus('v_ef_atual','v_ef_max','msg_ef','EF', 300); salvarAuto()">
+                            <span>/</span>
+                            <input type="text" id="v_ef_max" value="0" onkeyup="attStatus('v_ef_atual','v_ef_max','msg_ef','EF', 300); salvarAuto()">
+                        </div>
+                        <div id="msg_ef" class="status-msg">---</div>
+                    </div>
+
+                    <div class="status-box status-pos">
+                        <label>Barra de Postura</label>
+                        <span class="status-limit-badge">(Máx. 300)</span>
+                        <div class="status-inputs">
+                            <input type="text" id="v_pos_atual" value="100" onkeyup="attStatus('v_pos_atual','v_pos_max','msg_pos','Postura', 300); salvarAuto()">
+                            <span>/</span>
+                            <input type="text" id="v_pos_max" value="100" onkeyup="attStatus('v_pos_atual','v_pos_max','msg_pos','Postura', 300); salvarAuto()">
+                        </div>
+                        <div id="msg_pos" class="status-msg">---</div>
+                    </div>
+
+                    <div class="status-box status-sob">
+                        <label>Sobrecarga</label>
+                        <span class="status-limit-badge">(Máx. 300)</span>
+                        <div class="status-inputs">
+                            <input type="text" id="v_sob_atual" value="0" onkeyup="attStatus('v_sob_atual','v_sob_max','msg_sob','Sobrecarga', 300); salvarAuto()">
+                            <span>/</span>
+                            <input type="text" id="v_sob_max" value="100" onkeyup="attStatus('v_sob_atual','v_sob_max','msg_sob','Sobrecarga', 300); salvarAuto()">
+                        </div>
+                        <div id="msg_sob" class="status-msg">---</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MARCADORES DE CONDIÇÕES RÁPIDAS (NEGATIVAS & POSITIVAS) -->
+            <div class="card">
+                <div class="card-title" style="color: var(--danger-color);">🩸 Status Negativos (Debuffs)</div>
+                <div class="status-badges-container" id="container-debuffs">
+                    <!-- Gerado dinamicamente via JS com Tooltips e Contadores -->
+                </div>
+
+                <div class="card-title" style="color: var(--success-color); margin-top: 1.2rem;">✨ Status Positivos (Buffs)</div>
+                <div class="status-badges-container" id="container-buffs">
+                    <!-- Gerado dinamicamente via JS com Tooltips -->
+                </div>
+            </div>
+
+            <!-- CONTADOR DE RECURSOS RÁPIDOS -->
+            <div class="card">
+                <div class="card-title">Recursos Rápidos de Combate</div>
+                <div class="grid-4">
+                    <div class="resource-tracker">
+                        <label>Munição / Carg.</label>
+                        <div class="tracker-controls">
+                            <button onclick="alterarRecurso('r_municao', -1)">-</button>
+                            <input type="number" id="r_municao" value="0" oninput="salvarAuto()">
+                            <button onclick="alterarRecurso('r_municao', 1)">+</button>
+                        </div>
+                    </div>
+                    <div class="resource-tracker">
+                        <label>Kits Médicos</label>
+                        <div class="tracker-controls">
+                            <button onclick="alterarRecurso('r_kits', -1)">-</button>
+                            <input type="number" id="r_kits" value="0" oninput="salvarAuto()">
+                            <button onclick="alterarRecurso('r_kits', 1)">+</button>
+                        </div>
+                    </div>
+                    <div class="resource-tracker">
+                        <label>Elixires / Poções</label>
+                        <div class="tracker-controls">
+                            <button onclick="alterarRecurso('r_elixires', -1)">-</button>
+                            <input type="number" id="r_elixires" value="0" oninput="salvarAuto()">
+                            <button onclick="alterarRecurso('r_elixires', 1)">+</button>
+                        </div>
+                    </div>
+                    <div class="resource-tracker">
+                        <label>Inspiração / P.V</label>
+                        <div class="tracker-controls">
+                            <button onclick="alterarRecurso('r_inspiracao', -1)">-</button>
+                            <input type="number" id="r_inspiracao" value="0" oninput="salvarAuto()">
+                            <button onclick="alterarRecurso('r_inspiracao', 1)">+</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TABELA DINÂMICA DE ATAQUES & ARMAS -->
+            <div class="card">
+                <div class="card-title">
+                    <span>Ataques & Armas</span>
+                    <button class="btn btn-primary" style="padding: 0.2rem 0.6rem; font-size: 0.8rem;" onclick="adicionarLinhaArma()">+ Nova Arma</button>
+                </div>
+                <table class="weapons-table" id="tabela-armas">
+                    <thead>
+                        <tr>
+                            <th>Arma / Ataque</th>
+                            <th>Teste / Perícia</th>
+                            <th>Dano</th>
+                            <th>Crítico</th>
+                            <th>Alcance / Tipo</th>
+                            <th style="width: 40px;"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="corpo-tabela-armas">
+                        <!-- Linhas adicionadas via JS -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- BLOCO DE ANOTAÇÕES / DIÁRIO DE SESSÃO -->
+            <div class="card">
+                <div class="card-title">📌 Diário de Sessão & Anotações do Agente</div>
+                <div class="grid-3">
+                    <div class="input-group">
+                        <label>Objetivos da Missão</label>
+                        <textarea id="f_diario_objetivos" rows="5" placeholder="• Primário: Encontrar a fonte...\n• Secundário: Resgatar o informante." oninput="salvarAuto()"></textarea>
+                    </div>
+                    <div class="input-group">
+                        <label>NPCs Importantes</label>
+                        <textarea id="f_diario_npcs" rows="5" placeholder="• Dr. Vane: Cientista suspeito...\n• Agente Silva: Contato local." oninput="salvarAuto()"></textarea>
+                    </div>
+                    <div class="input-group">
+                        <label>Pistas & Investigação</label>
+                        <textarea id="f_diario_pistas" rows="5" placeholder="• Documento queimado achado no galpão 3.\n• Código de acesso: 4092." oninput="salvarAuto()"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- HABILIDADES -->
+            <div class="card">
+                <div class="card-title">Habilidades em Destaque</div>
+                <div class="skills-grid">
+                    <div class="skill-item"><label>Armas</label><input type="text" id="h_armas" value="0" oninput="salvarAuto()"></div>
+                    <div class="skill-item"><label>Armas Brancas</label><input type="text" id="h_armas_b" value="0" oninput="salvarAuto()"></div>
+                    <div class="skill-item"><label>Armas de Fogo</label><input type="text" id="h_armas_f" value="0" oninput="salvarAuto()"></div>
+                    <div class="skill-item"><label>Artes Marciais</label><input type="text" id="h_artes" value="0" oninput="salvarAuto()"></div>
+                    <div class="skill-item"><label>Atletismo</label><input type="text" id="h_atletismo" value="0" oninput="salvarAuto()"></div>
+                    <div class="skill-item"><label>Briga</label><input type="text" id="h_briga" value="0" oninput="salvarAuto()"></div>
+                    <div class="skill-item"><label>Ciência</label><input type="text" id="h_ciencia" value="0" oninput="salvarAuto()"></div>
+                    <div class="skill-item"><label>Criptografia</label><input type="text" id="h_cripto" value="0" oninput="salvarAuto()"></div>
+                    <div class="skill-item"><label>Empatia.Animais</label><input type="text" id="h_empatia" value="0" oninput="salvarAuto()"></div>
+                    <div class="skill-item"><label>Enganação</label><input type="text" id="h_enganacao" value="0" oninput="salvarAuto()"></div>
+                    <div class="skill-item"><label>Explosivos</label><input type="text" id="h_explosivos" value="0" oninput="salvarAuto()"></div>
+                    <div class="skill-item"><label>Furtividade</label><input type="text" id="h_furtividade" value="0" oninput="salvarAuto()"></div>
+                    <div class="skill-item"><label>Intimidação</label><input type="text" id="h_intimidacao" value="0" oninput="salvarAuto()"></div>
+                    <div class="skill-item"><label>Investigação</label><input type="text" id="h_investigacao" value="0" oninput="salvarAuto()"></div>
+                    <div class="skill-item"><label>Liderança</label><input type="text" id="h_lideranca" value="0" oninput="salvarAuto()"></div>
+                    <div class="skill-item"><label>Manha</label><input type="text" id="h_manha" value="0" oninput="salvarAuto()"></div>
+                    <div class="skill-item"><label>Medicina</label><input type="text" id="h_medicina" value="0" oninput="salvarAuto()"></div>
+                    <div class="skill-item"><label>Negociação</label><input type="text" id="h_negociacao" value="0" oninput="salvarAuto()"></div>
+                    <div class="skill-item"><label>Ocultismo</label><input type="text" id="h_ocultismo" value="0" oninput="salvarAuto()"></div>
+                    <div class="skill-item"><label>Percepção</label><input type="text" id="h_percepcao" value="0" oninput="salvarAuto()"></div>
+                    <div class="skill-item"><label>Performance</label><input type="text" id="h_performance" value="0" oninput="salvarAuto()"></div>
+                    <div class="skill-item"><label>Persuasão</label><input type="text" id="h_persuasao" value="0" oninput="salvarAuto()"></div>
+                    <div class="skill-item"><label>Pilotagem</label><input type="text" id="h_pilotagem" value="0" oninput="salvarAuto()"></div>
+                    <div class="skill-item"><label>Política</label><input type="text" id="h_politica" value="0" oninput="salvarAuto()"></div>
+                    <div class="skill-item"><label>Religião</label><input type="text" id="h_religiao" value="0" oninput="salvarAuto()"></div>
+                    <div class="skill-item"><label>Resistência</label><input type="text" id="h_resistencia" value="0" oninput="salvarAuto()"></div>
+                    <div class="skill-item"><label>Rituais</label><input type="text" id="h_rituais" value="0" oninput="salvarAuto()"></div>
+                    <div class="skill-item"><label>Runologia</label><input type="text" id="h_runologia" value="0" oninput="salvarAuto()"></div>
+                    <div class="skill-item"><label>Sagacidade</label><input type="text" id="h_sagacidade" value="0" oninput="salvarAuto()"></div>
+                    <div class="skill-item"><label>Sanidade</label><input type="text" id="h_sanidade" value="0" oninput="salvarAuto()"></div>
+                    <div class="skill-item"><label>Sobrevivência</label><input type="text" id="h_sobrevivencia" value="0" oninput="salvarAuto()"></div>
+                    <div class="skill-item"><label>Tecnologia</label><input type="text" id="h_tecnologia" value="0" oninput="salvarAuto()"></div>
+                    <div class="skill-item"><label>Toxicologia</label><input type="text" id="h_toxicologia" value="0" oninput="salvarAuto()"></div>
+                    <div class="skill-item"><label>Táticas de Combate</label><input type="text" id="h_taticas" value="0" oninput="salvarAuto()"></div>
+                </div>
+            </div>
+
+            <!-- INVENTÁRIO -->
+            <div class="card">
+                <div class="card-title">Inventário & Carga Automática</div>
+                <div class="grid-2" style="margin-bottom: 0.8rem;">
+                    <div class="input-group">
+                        <label>Peso Atual Carregado (kg)</label>
+                        <input type="number" id="f_peso_atual" value="0" oninput="calcularCarga(); salvarAuto()">
+                    </div>
+                    <div class="input-group">
+                        <label>Capacidade de Carga (Máx)</label>
+                        <input type="text" id="f_peso_max" readonly>
+                    </div>
+                </div>
+                <div class="input-group inv-box">
+                    <label>Equipamentos</label>
+                    <textarea id="f_inv_equip" placeholder="Suas armas, armaduras e equipamentos chave..." oninput="salvarAuto()"></textarea>
+                </div>
+                <div class="grid-2 inv-box">
+                    <div class="input-group">
+                        <label>Consumíveis</label>
+                        <textarea id="f_inv_cons" placeholder="Munição, curativos..." oninput="salvarAuto()"></textarea>
+                    </div>
+                    <div class="input-group">
+                        <label>Materiais</label>
+                        <textarea id="f_inv_mat" placeholder="Componentes, itens de missão..." oninput="salvarAuto()"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VANTAGENS E DESVANTAGENS -->
+            <div class="card">
+                <div class="card-title">Características</div>
+                <div class="grid-2">
+                    <div class="input-group">
+                        <label>Vantagens</label>
+                        <textarea id="f_vantagens" rows="4" placeholder="Adicione as vantagens do seu personagem..." oninput="salvarAuto()"></textarea>
+                    </div>
+                    <div class="input-group">
+                        <label>Desvantagens</label>
+                        <textarea id="f_desvantagens" rows="4" placeholder="Adicione as desvantagens do seu personagem..." oninput="salvarAuto()"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RITUAIS E NOTAS -->
+            <div class="card" style="border-color: var(--primary);">
+                <div class="card-title" style="color: var(--primary);">Anotações Almáticas (Rituais)</div>
+                <div class="input-group">
+                    <label>Rituais Aprendidos</label>
+                    <textarea id="f_rituais_anotacao" rows="4" oninput="salvarAuto()"></textarea>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        const INITIAL_POINTS = 14;
+        let avatarBase64 = "";
+
+        // Efeitos do Sistema (Com descrição e regras para Tooltip)
+        const statusListaNegativa = [
+            { id: "sangramento", nome: "Sangramento", max: 3, desc: "4d12 dano verdadeiro por turno por nível (máx 3). Não recupera PV." },
+            { id: "exaustao", nome: "Exaustão", max: 4, desc: "Nv I: -3 testes físicos | Nv II: Mov. Reduzido | Nv III: Não corre | Nv IV: Desmaia." },
+            { id: "queimadura", nome: "Queimadura", max: 3, desc: "1d6 dano por rodada por nível (máx 3). Proíbe equip. pesados." },
+            { id: "congelamento", nome: "Congelamento", max: 3, desc: "Movimento /2. -2 em Destreza por nível (máx 3)." },
+            { id: "fratura", nome: "Fratura", max: 1, desc: "Braço: -3 em ataques | Perna: metade da movimentação." },
+            { id: "atordoado", nome: "Atordoado", max: 1, desc: "Perde a próxima Reação. -3 em testes de ataque." },
+            { id: "cegueira", nome: "Cegueira", max: 1, desc: "Sem ataques de precisão. Percepção visual falha. Ataques sofrem -5." },
+            { id: "surdez", nome: "Surdez", max: 1, desc: "Comunicação prejudicada. Imune a efeitos baseados em som." },
+            { id: "paralisia", nome: "Paralisia", max: 1, desc: "Não pode se mover. Apenas ações mentais permitidas." },
+            { id: "contaminado", nome: "Contaminado", max: 1, desc: "Ganha contaminação extra. Toda cura recebida é reduzida em 25%." },
+            { id: "envenenado", nome: "Envenenado", max: 1, desc: "Sofre dano contínuo e penalidades por toxinas." },
+            { id: "silenciado", nome: "Silenciado", max: 1, desc: "Não pode lançar habilidades que exijam fala." },
+            { id: "medo", nome: "Medo", max: 1, desc: "-2 em ataques. Requer Força de Vontade para avançar." },
+            { id: "insanidade", nome: "Insanidade", max: 1, desc: "Mestre introduz alucinações, paranoia ou vozes na interpretação." },
+            { id: "maldicao", nome: "Maldição", max: 1, desc: "Redução de atributos, perda de sanidade ou cura reduzida." }
+        ];
+
+        const statusListaPositiva = [
+            { id: "adrenalina", nome: "Adrenalina", desc: "+2 Força, +2 Destreza. Ignora dor leve. Gera Exaustão I ao fim." },
+            { id: "concentracao", nome: "Concentração", desc: "+2 Precisão, +2 EM, +1 na margem de crítico." },
+            { id: "protecao", nome: "Proteção", desc: "Redução de dano e resistência adicional específica." },
+            { id: "regeneracao", nome: "Regeneração", desc: "Recupera 1d6 PV ao início da rodada." },
+            { id: "determinacao", nome: "Determinação", desc: "Ignora Medo. +2 em testes de Resistência Mental." },
+            { id: "camuflagem", nome: "Camuflagem", desc: "+4 em Furtividade. Penalidade para inimigos te detectarem." },
+            { id: "inspiracao", nome: "Inspiração", desc: "+2 em testes sociais. Repete 1 falha por cena." },
+            { id: "reflexos", nome: "Reflexos Aguçados", desc: "+2 Defesa, +2 Esquivas, +1 Reação por rodada." },
+            { id: "fortificado", nome: "Fortificado", desc: "Reduz 2 de todo dano recebido. Resistência a empurrões." },
+            { id: "purificacao", nome: "Purificação", desc: "Remove efeito leve/moderado. Vantagem vs Contaminação/Veneno." },
+            { id: "visao_agucada", nome: "Visão Aguçada", desc: "Ignora iluminação baixa. +3 Percepção Visual." },
+            { id: "fluxo_combate", nome: "Fluxo de Combate", desc: "+2 no 1º ataque do turno. Movimentação extra se eliminar inimigo." }
+        ];
+
+        let statusAtivos = {};
+
+        const levelTable = {
+            1: { xp: "0", rec: 0, total: 0 }, 2: { xp: "500", rec: 4, total: 4 }, 3: { xp: "1.300", rec: 4, total: 8 },
+            4: { xp: "2.400", rec: 4, total: 12 }, 5: { xp: "3.800", rec: 4, total: 16 }, 6: { xp: "5.500", rec: 4, total: 20 },
+            7: { xp: "7.500", rec: 4, total: 24 }, 8: { xp: "9.900", rec: 4, total: 28 }, 9: { xp: "12.800", rec: 4, total: 32 },
+            10: { xp: "16.200", rec: 4, total: 36 }, 11: { xp: "20.200", rec: 4, total: 40 }, 12: { xp: "24.900", rec: 4, total: 44 },
+            13: { xp: "30.300", rec: 4, total: 48 }, 14: { xp: "36.500", rec: 4, total: 52 }, 15: { xp: "43.600", rec: 4, total: 56 },
+            16: { xp: "51.700", rec: 4, total: 60 }, 17: { xp: "60.900", rec: 4, total: 64 }, 18: { xp: "71.300", rec: 4, total: 68 },
+            19: { xp: "83.000", rec: 4, total: 72 }, 20: { xp: "96.100", rec: 4, total: 76 }, 21: { xp: "110.700", rec: 4, total: 80 },
+            22: { xp: "126.900", rec: 4, total: 84 }, 23: { xp: "144.800", rec: 4, total: 88 }, 24: { xp: "164.500", rec: 4, total: 92 },
+            25: { xp: "186.100", rec: 4, total: 96 }, 26: { xp: "209.700", rec: 4, total: 100 }, 27: { xp: "235.400", rec: 4, total: 104 },
+            28: { xp: "263.300", rec: 4, total: 108 }, 29: { xp: "293.500", rec: 4, total: 112 }, 30: { xp: "326.100", rec: 4, total: 116 },
+            31: { xp: "361.200", rec: 4, total: 120 }, 32: { xp: "399.000", rec: 4, total: 124 }, 33: { xp: "439.600", rec: 4, total: 128 },
+            34: { xp: "483.100", rec: 4, total: 132 }, 35: { xp: "530.000", rec: 4, total: 136 }
+        };
+
+        const dadosPatentes = {
+          lutador: {
+            pvBase: 40, efBase: 35, emBase: 35, atributos: { f_for: 1, f_vig: 1, f_des: 1 },
+            descricao: "<b>Função:</b> Linha de frente.<br><b>Passiva - Postura Implacável:</b> +1 Grau de Sucesso em ataques corpo a corpo.<br><b>Ativa I - Surto de Violência (6 FV):</b> Dois ataques completos.<br><b>Ativa II - Guardião (8 FV):</b> Aliados em 6m ganham +2 Defesa."
+          },
+          especialista: {
+            pvBase: 30, efBase: 30, emBase: 30, atributos: { f_int: 1, f_aut: 1, f_des: 1 },
+            descricao: "<b>Função:</b> Atirador e tático.<br><b>Passiva - Olho de Águia:</b> Revela informações táticas.<br><b>Ativa I - Disparo Preciso (6 FV):</b> Mira em partes específicas.<br><b>Ativa II - Execução Tática (8 FV):</b> Ignores cobertura (+3 dano)."
+          },
+          medico: {
+            pvBase: 25, efBase: 35, emBase: 35, atributos: { f_int: 1, f_rac: 1, f_aut: 1 },
+            descricao: "<b>Função:</b> Suporte.<br><b>Passiva - Atendimento:</b> +2 de cura. Estabilizados recuperam +1d4 PV.<br><b>Ativa I - Socorro Instantâneo (4 FV):</b> Cura 2d6 PV.<br><b>Ativa II - Estimulante (8 FV):</b> Cura 3d6 PV, 2d10 Sanidade."
+          },
+          rampto: {
+            pvBase: 20, efBase: 45, emBase: 45, atributos: { f_int: 1, f_man: 1, f_rac: 1 },
+            descricao: "<b>Função:</b> Ocultismo.<br><b>Passiva - Olho do Além:</b> Testes de Ocultismo revelam auras.<br><b>Ativa I - Carga Perfeita (6 FV):</b> Conjura sem penalidades.<br><b>Ativa II - Manifestação (10 FV):</b> Rituais com +2 Graus de Sucesso."
+          }
+        };
+
+        const mensagensFrases = {
+            Vida: { cheio: "Saúde impecável, pronto para o combate.", metade: "Atenção: Ferimentos leves detectados.", quaseFim: "CRÍTICO: Risco iminente de morte!", zerado: "MASCARADO CAÍDO: Socorro urgente!" },
+            Sanidade: { cheio: "Mente totalmente lúcida.", metade: "Pensamentos turvos... Perturbação leve.", quaseFim: "ÁCIDO DA LOUCURA: À beira de um surto!", zerado: "LOUCURA TOTAL: Agente perdeu a razão." },
+            Contaminação: { cheio: "NÃO-CONTAMINADO: Organismo limpo.", metade: "ALERTA: Toxinas na corrente sanguínea.", quaseFim: "PERIGO CRÍTICO: Mutação quase irreversível!", zerado: "CORRUPÇÃO TOTAL: Corpo dominado." },
+            EM: { cheio: "Foco psíquico renovado.", metade: "Fadiga mental se acumulando...", quaseFim: "EXAUSTÃO PSIQUICA: Dificuldade de foco.", zerado: "COLAPSO MENTAL: Incapaz de usar habilidades." },
+            EF: { cheio: "Energia física no auge.", metade: "Cansaço físico aparente...", quaseFim: "EXAUSTÃO FÍSICA: Respiração pesada.", zerado: "COLAPSO FÍSICO: Corpo incapaz de agir." },
+            Postura: { cheio: "Base firme e guarda impenetrável.", metade: "Guarda instável.", quaseFim: "POSTURA VULNERÁVEL: Quase sofrendo quebra!", zerado: "POSTURA QUEBRADA: Vulnerável a acertos críticos!" },
+            Sobrecarga: { cheio: "Sistemas em limite térmico normal.", metade: "Aquecimento moderado.", quaseFim: "SUPERAQUECIMENTO: Risco de falha!", zerado: "SOBRECARGA TOTAL: Trajes pifaram." }
+        };
+
+        let patenteAnterior = "";
+
+        window.onload = function() {
+            const lvlSelect = document.getElementById('f_nivel');
+            for (let i = 1; i <= 35; i++) {
+                let opt = document.createElement('option');
+                opt.value = i;
+                opt.innerHTML = `Nível ${i}`;
+                lvlSelect.appendChild(opt);
+            }
+            gerarBadgesStatus();
+            carregarAuto();
+            atualizarFicha(false);
+        };
+
+        /* --- TEMA CLARO / ESCURO --- */
+        function toggleTheme() {
+            document.body.classList.toggle('light-theme');
+            salvarAuto();
+        }
+
+        /* --- NAVEGAÇÃO ENTRE ABAS --- */
+        function showPage(pageId) {
+            document.getElementById('page-home').classList.add('hidden');
+            document.getElementById('page-sheet').classList.add('hidden');
+            document.getElementById('btn-save').classList.add('hidden');
+
+            document.getElementById('page-' + pageId).classList.remove('hidden');
+            if(pageId === 'sheet') {
+                document.getElementById('btn-save').classList.remove('hidden');
+            }
+        }
+
+        /* --- MONTAGEM DOS STATUS BADGES (BUFFS & DEBUFFS) --- */
+        function gerarBadgesStatus() {
+            const contNeg = document.getElementById('container-debuffs');
+            const contPos = document.getElementById('container-buffs');
+
+            contNeg.innerHTML = "";
+            contPos.innerHTML = "";
+
+            statusListaNegativa.forEach(st => {
+                const badge = document.createElement('div');
+                const lvl = statusAtivos[st.id] || 0;
+                badge.className = `status-badge ${lvl > 0 ? 'active-neg' : ''}`;
+                badge.setAttribute('data-tooltip', st.desc);
+
+                let innerHTML = `<span onclick="alternarStatusBadge('${st.id}', ${st.max})">${st.nome}</span>`;
+                if (st.max > 1) {
+                    innerHTML += `
+                        <div class="badge-counter">
+                            <button class="badge-btn" onclick="ajustarStatusCounter('${st.id}', -1, ${st.max})">-</button>
+                            <span>${lvl}</span>
+                            <button class="badge-btn" onclick="ajustarStatusCounter('${st.id}', 1, ${st.max})">+</button>
+                        </div>
+                    `;
+                }
+                badge.innerHTML = innerHTML;
+                contNeg.appendChild(badge);
+            });
+
+            statusListaPositiva.forEach(st => {
+                const badge = document.createElement('div');
+                const atv = statusAtivos[st.id] ? 1 : 0;
+                badge.className = `status-badge ${atv > 0 ? 'active-pos' : ''}`;
+                badge.setAttribute('data-tooltip', st.desc);
+                badge.onclick = () => alternarStatusBadge(st.id, 1);
+                badge.innerHTML = st.nome;
+                contPos.appendChild(badge);
+            });
+        }
+
+        function alternarStatusBadge(id, max) {
+            if (!statusAtivos[id] || statusAtivos[id] === 0) {
+                statusAtivos[id] = 1;
+            } else {
+                statusAtivos[id] = 0;
+            }
+            gerarBadgesStatus();
+            salvarAuto();
+        }
+
+        function ajustarStatusCounter(id, delta, max) {
+            let actual = statusAtivos[id] || 0;
+            actual = Math.min(max, Math.max(0, actual + delta));
+            statusAtivos[id] = actual;
+            gerarBadgesStatus();
+            salvarAuto();
+        }
+
+        /* --- SALVAMENTO AUTOMÁTICO (LOCAL STORAGE) --- */
+        function salvarAuto() {
+            const dadosFicha = { avatar: avatarBase64, statusAtivos: statusAtivos, theme: document.body.classList.contains('light-theme') ? 'light' : 'dark', armas: [] };
+
+            document.querySelectorAll('input, select, textarea').forEach(el => {
+                if(el.id) dadosFicha[el.id] = el.value;
+            });
+
+            document.querySelectorAll('#corpo-tabela-armas tr').forEach(tr => {
+                dadosFicha.armas.push({
+                    nome: tr.querySelector('.w-nome').value,
+                    teste: tr.querySelector('.w-teste').value,
+                    dano: tr.querySelector('.w-dano').value,
+                    crit: tr.querySelector('.w-crit').value,
+                    alcance: tr.querySelector('.w-alcance').value
+                });
+            });
+
+            localStorage.setItem('penumbra_ficha_auto', JSON.stringify(dadosFicha));
+        }
+
+        function carregarAuto() {
+            const salvo = localStorage.getItem('penumbra_ficha_auto');
+            if (salvo) {
+                try {
+                    const dados = JSON.parse(salvo);
+                    restaurarDados(dados);
+                } catch(e) {}
+            }
+        }
+
+        function restaurarDados(dados) {
+            if (dados.theme === 'light') document.body.classList.add('light-theme');
+            
+            for (const [id, valor] of Object.entries(dados)) {
+                const el = document.getElementById(id);
+                if (el) el.value = valor;
+            }
+
+            if (dados.avatar) {
+                avatarBase64 = dados.avatar;
+                document.getElementById('avatar-img').src = avatarBase64;
+                document.getElementById('avatar-img').classList.remove('hidden');
+                document.getElementById('avatar-placeholder').classList.add('hidden');
+            }
+
+            if (dados.statusAtivos) {
+                statusAtivos = dados.statusAtivos;
+                gerarBadgesStatus();
+            }
+
+            document.getElementById('corpo-tabela-armas').innerHTML = '';
+            if (dados.armas && Array.isArray(dados.armas)) {
+                dados.armas.forEach(arma => adicionarLinhaArma(arma));
+            }
+        }
+
+        /* --- OUTRAS FUNÇÕES DO SISTEMA --- */
+        function carregarAvatar(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    avatarBase64 = e.target.result;
+                    document.getElementById('avatar-img').src = avatarBase64;
+                    document.getElementById('avatar-img').classList.remove('hidden');
+                    document.getElementById('avatar-placeholder').classList.add('hidden');
+                    salvarAuto();
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function alterarRecurso(id, delta) {
+            const el = document.getElementById(id);
+            let val = parseInt(el.value) || 0;
+            val = Math.max(0, val + delta);
+            el.value = val;
+            salvarAuto();
+        }
+
+        function adicionarLinhaArma(dados = {}) {
+            const tbody = document.getElementById('corpo-tabela-armas');
+            const tr = document.createElement('tr');
+            
+            tr.innerHTML = `
+                <td><input type="text" class="w-nome" value="${dados.nome || ''}" placeholder="Ex: Pistola 9mm" oninput="salvarAuto()"></td>
+                <td><input type="text" class="w-teste" value="${dados.teste || ''}" placeholder="Ex: Armas de Fogo" oninput="salvarAuto()"></td>
+                <td><input type="text" class="w-dano" value="${dados.dano || ''}" placeholder="Ex: 1d8+2" oninput="salvarAuto()"></td>
+                <td><input type="text" class="w-crit" value="${dados.crit || ''}" placeholder="Ex: 19/x3" oninput="salvarAuto()"></td>
+                <td><input type="text" class="w-alcance" value="${dados.alcance || ''}" placeholder="Ex: 9m / Perf." oninput="salvarAuto()"></td>
+                <td><button class="btn btn-danger" style="padding: 0.1rem 0.4rem; font-size: 0.75rem;" onclick="this.closest('tr').remove(); salvarAuto()">X</button></td>
+            `;
+            tbody.appendChild(tr);
+        }
+
+        function calcularCarga() {
+            const forca = parseInt(document.getElementById('f_for').value) || 0;
+            const maxCarga = 10 + forca; 
+            const pesoAtual = parseFloat(document.getElementById('f_peso_atual').value) || 0;
+
+            const inputMax = document.getElementById('f_peso_max');
+            inputMax.value = `${maxCarga} kg`;
+
+            const inputAtual = document.getElementById('f_peso_atual');
+            if (pesoAtual > maxCarga) inputAtual.classList.add('overburdened');
+            else inputAtual.classList.remove('overburdened');
+        }
+
+        function atualizarFicha(trocouPatente = false) {
+            const selectPatente = document.getElementById("f_patente").value;
+
+            if (trocouPatente && selectPatente !== patenteAnterior) {
+                if (patenteAnterior && dadosPatentes[patenteAnterior]) {
+                    const atrsAntigos = dadosPatentes[patenteAnterior].atributos;
+                    for (let atr in atrsAntigos) {
+                        let el = document.getElementById(atr);
+                        if (el) el.value = Math.max(0, parseInt(el.value) - atrsAntigos[atr]);
+                    }
+                }
+                if (selectPatente && dadosPatentes[selectPatente]) {
+                    const novosAtrs = dadosPatentes[selectPatente].atributos;
+                    for (let atr in novosAtrs) {
+                        let el = document.getElementById(atr);
+                        if (el) el.value = (parseInt(el.value) || 0) + novosAtrs[atr];
+                    }
+                }
+                patenteAnterior = selectPatente;
+            }
+
+            const currentLvl = parseInt(document.getElementById('f_nivel').value) || 1;
+            const lvlData = levelTable[currentLvl];
+
+            document.getElementById('f_xp').value = lvlData.xp;
+            document.getElementById('f_pts_rec').value = lvlData.rec > 0 ? `+${lvlData.rec}` : '—';
+            document.getElementById('f_pts_atributo').value = lvlData.total;
+
+            const ptsBonus = parseInt(document.getElementById('f_pts_bonus').value) || 0;
+            const totalAvailable = INITIAL_POINTS + lvlData.total + ptsBonus;
+
+            let totalSpent = 0;
+            document.querySelectorAll('.attr-input').forEach(input => {
+                totalSpent += parseInt(input.value) || 0;
+            });
+
+            const remaining = totalAvailable - totalSpent;
+            const poolDisplay = document.getElementById('point-pool-display');
+            poolDisplay.innerText = `Pontos Disponíveis: ${remaining} / ${totalAvailable}`;
+
+            if (remaining < 0) poolDisplay.classList.add('error');
+            else poolDisplay.classList.remove('error');
+
+            const egoActive = document.getElementById('f_ego_status').value === 'on';
+            const egoLvl = parseInt(document.getElementById('f_ego_nivel').value) || 1;
+            let egoMultiplier = egoActive ? (egoLvl === 1 ? 2 : egoLvl === 2 ? 3 : 4) : 1;
+
+            const vVigor = parseInt(document.getElementById("f_vig").value) || 0;
+            const vForca = parseInt(document.getElementById("f_for").value) || 0;
+            const vDestreza = parseInt(document.getElementById("f_des").value) || 0;
+            const vAutocontrole = parseInt(document.getElementById("f_aut").value) || 0;
+            const vInteligencia = parseInt(document.getElementById("f_int").value) || 0;
+            const vDeterminacao = parseInt(document.getElementById("f_det").value) || 0;
+
+            if (selectPatente && dadosPatentes[selectPatente]) {
+                const info = dadosPatentes[selectPatente];
+                document.getElementById("detalhes-patente").innerHTML = info.descricao;
+
+                const totalPV = Math.round((info.pvBase + 4 + vVigor) * egoMultiplier);
+                const totalEF = Math.round((info.efBase + vForca + vDestreza) * egoMultiplier);
+                const totalEM = Math.round((info.emBase + vAutocontrole + vInteligencia + vDeterminacao) * egoMultiplier);
+
+                document.getElementById("v_pv_max").value = totalPV;
+                document.getElementById("v_ef_max").value = totalEF;
+                document.getElementById("v_em_max").value = totalEM;
+            }
+
+            calcularCarga();
+
+            attStatus('v_pv_atual','v_pv_max','msg_pv','Vida');
+            attStatus('v_san_atual','v_san_max','msg_san','Sanidade', 300);
+            attStatus('v_cont_atual','v_cont_max','msg_cont','Contaminação', 300);
+            attStatus('v_em_atual','v_em_max','msg_em','EM', 300);
+            attStatus('v_ef_atual','v_ef_max','msg_ef','EF', 300);
+            attStatus('v_pos_atual','v_pos_max','msg_pos','Postura', 300);
+            attStatus('v_sob_atual','v_sob_max','msg_sob','Sobrecarga', 300);
+        }
+
+        function attStatus(atualId, maxId, msgId, nomeBarra, maxGlobal = null) {
+            let elAtual = document.getElementById(atualId);
+            let elMax = document.getElementById(maxId);
+            let msgBox = document.getElementById(msgId);
+
+            let atual = parseInt(elAtual.value) || 0;
+            let max = parseInt(elMax.value) || 1; 
+
+            if(maxGlobal && max > maxGlobal) { max = maxGlobal; elMax.value = maxGlobal; }
+
+            let percent = (atual / max) * 100;
+            let textos = mensagensFrases[nomeBarra] || {};
+            const ehBarraInvertida = (nomeBarra === 'Contaminação' || nomeBarra === 'Sobrecarga');
+
+            if (!ehBarraInvertida) {
+                if (percent >= 90) { msgBox.innerHTML = textos.cheio; msgBox.style.color = "#85cb33"; }
+                else if (percent >= 40) { msgBox.innerHTML = textos.metade; msgBox.style.color = "#e9c46a"; }
+                else if (percent > 0) { msgBox.innerHTML = textos.quaseFim; msgBox.style.color = "#f4a261"; }
+                else { msgBox.innerHTML = textos.zerado; msgBox.style.color = "#e63946"; }
+            } else {
+                if (percent <= 10) { msgBox.innerHTML = textos.cheio; msgBox.style.color = "#85cb33"; }
+                else if (percent <= 60) { msgBox.innerHTML = textos.metade; msgBox.style.color = "#e9c46a"; }
+                else if (percent < 100) { msgBox.innerHTML = textos.quaseFim; msgBox.style.color = "#f4a261"; }
+                else { msgBox.innerHTML = textos.zerado; msgBox.style.color = "#e63946"; }
+            }
+
+            const pvAtual = parseInt(document.getElementById('v_pv_atual').value) || 0;
+            const sanAtual = parseInt(document.getElementById('v_san_atual').value) || 0;
+
+            if (pvAtual <= 0 || sanAtual <= 0) document.body.classList.add('critical-mode');
+            else document.body.classList.remove('critical-mode');
+        }
+
+        function exportarFichaJSON() {
+            salvarAuto();
+            const salvo = localStorage.getItem('penumbra_ficha_auto');
+            const blob = new Blob([salvo], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            
+            const nomeAgente = document.getElementById('f_nome').value;
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = nomeAgente ? `ficha_${nomeAgente.replace(/\s+/g, '_').toLowerCase()}.json` : "ficha_penumbra.json";
+            
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }
+
+        function importarFichaJSON(event) {
+            const arquivo = event.target.files[0];
+            if (!arquivo) return;
+
+            const leitor = new FileReader();
+            leitor.onload = function(e) {
+                try {
+                    const dadosFicha = JSON.parse(e.target.result);
+                    restaurarDados(dadosFicha);
+                    atualizarFicha(false);
+                    salvarAuto();
+                    showPage('sheet'); 
+                    alert("Ficha carregada com sucesso!");
+                } catch (erro) {
+                    alert("Erro ao carregar o arquivo JSON.");
+                }
+            };
+            leitor.readAsText(arquivo);
+            event.target.value = '';
+        }
+    </script>
+</body>
+</html>
